@@ -9,6 +9,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { ReaderPage } from '../pages/ReaderPage';
 import { FlashcardPage } from '../pages/FlashcardPage';
 import { PronunciationPage } from '../pages/PronunciationPage';
+import { ReviewPage } from '../pages/ReviewPage';
 import { LoginPage } from '../pages/LoginPage';
 
 export function AppRoutes() {
@@ -58,6 +59,16 @@ export function AppRoutes() {
           <ProtectedRoute>
             <MainLayout>
               <FlashcardPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/review" 
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <ReviewPage />
             </MainLayout>
           </ProtectedRoute>
         } 

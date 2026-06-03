@@ -6,9 +6,9 @@ export const HSK_LEVELS = {
 };
 
 export const THEMES = {
-  dark: { label: "Imperial Dark", class: "reader-theme-dark bg-slate-900 text-slate-100 border border-slate-800" },
-  light: { label: "Classic Light", class: "reader-theme-light bg-white text-slate-800 border border-slate-100 shadow-sm" },
-  warm: { label: "Warm Sepia", class: "reader-theme-warm bg-[#fdf6e3] text-amber-900 border border-[#f5ebcf] shadow-sm" }
+  dark: { label: "Imperial Dark", class: "reader-theme-dark" },
+  light: { label: "Classic Light", class: "reader-theme-light" },
+  warm: { label: "Warm Sepia", class: "reader-theme-warm" }
 };
 
 export const DEFAULT_DOCUMENTS = [

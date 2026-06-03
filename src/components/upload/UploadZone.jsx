@@ -20,17 +20,17 @@ export function UploadZone({ onFileSelect }) {
   const validateFile = (file) => {
     if (!file) return false;
     
-    // Check extension (mostly support .txt)
+    // Check extension (support .txt and .pdf)
     const fileExtension = file.name.split('.').pop().toLowerCase();
-    if (fileExtension !== 'txt') {
-      setError('Chỉ hỗ trợ tệp tài liệu dạng văn bản chuẩn (.txt).');
+    if (fileExtension !== 'txt' && fileExtension !== 'pdf') {
+      setError('Chỉ hỗ trợ tệp tài liệu dạng văn bản (.txt) hoặc tài liệu PDF (.pdf).');
       setSelectedFile(null);
       return false;
     }
     
-    // Check size limit (max 2MB to keep client-side rendering fast)
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Tệp tin quá lớn. Dung lượng tối đa được phép là 2MB.');
+    // Check size limit (max 5MB to keep client-side rendering fast)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Tệp tin quá lớn. Dung lượng tối đa được phép là 5MB.');
       setSelectedFile(null);
       return false;
     }
@@ -84,7 +84,7 @@ export function UploadZone({ onFileSelect }) {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".txt"
+          accept=".txt,.pdf"
           onChange={handleFileChange}
           className="hidden"
         />
@@ -116,7 +116,7 @@ export function UploadZone({ onFileSelect }) {
               </p>
             </div>
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2 block">
-              Hỗ trợ định dạng .txt lên đến 2MB
+              Hỗ trợ định dạng .txt, .pdf lên đến 5MB
             </span>
           </div>
         )}

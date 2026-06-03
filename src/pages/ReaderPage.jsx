@@ -94,10 +94,10 @@ export function ReaderPage() {
               {documents.length === 0 ? 'Tải lên tài liệu học' : 'Nhập tài liệu mới'}
             </h2>
             <p className="text-xs text-slate-500 font-medium leading-relaxed">
-              Tải lên tệp tin văn bản tiếng Trung (.txt). Hệ thống sẽ tự phân tích HSK, từ vựng và tạo phiên âm Pinyin.
+              Tải lên tệp tin văn bản (.txt) hoặc tài liệu PDF (.pdf) tiếng Trung. Hệ thống sẽ tự phân tích HSK, từ vựng và tạo phiên âm Pinyin.
             </p>
           </div>
-          
+
           {/* Only show back option if they already have other files to read */}
           {documents.length > 0 && (
             <button
@@ -115,7 +115,7 @@ export function ReaderPage() {
           {uploadStep === 'upload' && (
             <UploadZone onFileSelect={handleFileSelect} />
           )}
-          
+
           {uploadStep === 'preview' && (
             <FilePreview
               file={fileObject}
@@ -124,7 +124,7 @@ export function ReaderPage() {
               onCancel={() => setUploadStep('upload')}
             />
           )}
-          
+
           {uploadStep === 'progress' && (
             <UploadProgress onComplete={handleProgressComplete} />
           )}
@@ -142,11 +142,11 @@ export function ReaderPage() {
       {/* Main Grid: Reading Canvas (left) vs Inspection Sidebar (right) */}
       {activeDoc ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start flex-1 min-h-[calc(100vh-14rem)]">
-          
+
           {/* Reading viewport (2 columns width) */}
-          <div className={`lg:col-span-2 border border-slate-100 rounded-3xl p-6 md:p-10 transition-all duration-300 min-h-[500px] overflow-y-auto ${getThemeClass()}`}>
-            <div className="max-w-2xl mx-auto space-y-4">
-              <h1 className="text-2xl font-bold border-b border-slate-100 pb-4 mb-6 text-slate-800">
+          <div className="lg:col-span-2 flex justify-center items-start min-h-[600px]">
+            <div className={`w-full max-w-[760px] md:min-h-[1075px] rounded-2xl p-10 md:p-16 shadow-[0_15px_45px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.03)] border border-slate-200/50 transition-all duration-300 ${getThemeClass()}`}>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-center mb-10 text-slate-800 tracking-tight leading-normal">
                 {activeDoc.title}
               </h1>
               <ReaderContent content={activeDoc.content} />

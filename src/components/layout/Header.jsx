@@ -4,7 +4,7 @@ import { Flame, Sparkles, LogOut, Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import logoImg from '../../assets/logo.jpg';
 
-export function Header() {
+export function Header({ offsetTop }) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +13,7 @@ export function Header() {
     { to: '/', label: 'Trang chủ', end: true },
     { to: '/dashboard', label: 'Tiến trình' },
     { to: '/flashcards', label: 'Flashcard' },
+    { to: '/review', label: 'Ôn tập' },
     { to: '/reader', label: 'Dịch thuật' },
     { to: '/pronunciation', label: 'Luyện phát âm' },
   ];
@@ -23,7 +24,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 max-w-7xl w-[calc(100%-2rem)] px-6 py-3 flex items-center justify-between z-50 bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-100/80 shadow-[0_8px_30px_rgb(15,23,42,0.04)] transition-all duration-300">
+    <header className={`fixed ${offsetTop ? 'top-14' : 'top-4'} left-1/2 -translate-x-1/2 max-w-7xl w-[calc(100%-2rem)] px-6 py-3 flex items-center justify-between z-50 bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-100/80 shadow-[0_8px_30px_rgb(15,23,42,0.04)] transition-all duration-300`}>
       {/* Brand Logo */}
       <NavLink to="/" className="flex items-center gap-3.5 shrink-0 hover:opacity-95 transition-opacity group">
         <img 
@@ -132,11 +133,7 @@ export function Header() {
             </NavLink>
           ))}
           {user && (
-            <div className="border-t border-slate-100 pt-3 mt-1 flex items-center justify-between text-xs text-slate-500 font-bold px-2">
-              <div className="flex items-center gap-3">
-                <span className="text-orange-500 flex items-center gap-1">🔥 {user.streak}d</span>
-                <span className="text-blue-600 flex items-center gap-1">✨ {user.xp} XP</span>
-              </div>
+            <div className="border-t border-slate-100 pt-3 mt-1 flex items-center justify-end text-xs text-slate-500 font-bold px-2">
               <button 
                 onClick={() => {
                   setIsMenuOpen(false);

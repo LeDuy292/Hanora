@@ -69,11 +69,6 @@ export function PronunciationPage() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     return !!SpeechRecognition;
   });
-  
-  const [simulationMode, setSimulationMode] = useState(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    return !SpeechRecognition;
-  });
 
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -168,9 +163,9 @@ export function PronunciationPage() {
     rec.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
       if (event.error === 'not-allowed') {
-        setErrorMessage('Không có quyền truy cập microphone. Vui lòng cho phép quyền micro hoặc thử Chế độ mô phỏng.');
+        setErrorMessage('Không có quyền truy cập microphone. Vui lòng cho phép quyền micro.');
       } else {
-        setErrorMessage(`Lỗi nhận dạng: ${event.error}. Thử nói lại hoặc dùng Chế độ mô phỏng.`);
+        setErrorMessage(`Lỗi nhận dạng: ${event.error}. Thử nói lại.`);
       }
       setIsRecording(false);
     };
@@ -215,42 +210,10 @@ export function PronunciationPage() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Pronunciation Simulation fallback for testing & unsupported browsers
-  const simTimeoutRef = useRef(null);
-  
-  const startSimulation = () => {
-    setIsRecording(true);
-    // Simulate recording for 3 seconds, then output result
-    simTimeoutRef.current = setTimeout(() => {
-      setIsRecording(false);
-      // Simulate close match: random score between 75 and 100
-      const randomScore = Math.floor(Math.random() * (100 - 75 + 1)) + 75;
-      const targetText = activeSentence.chinese;
-      
-      let mockTranscript = targetText;
-      // Occasional random omission/mistake for low score simulation
-      if (randomScore < 90 && targetText.length > 2) {
-        mockTranscript = targetText.slice(0, targetText.length - 1);
-      }
-
-      setTranscript(mockTranscript);
-      gradePronunciation(targetText, mockTranscript);
-    }, 2800);
-  };
-
-  const stopSimulation = () => {
-    if (simTimeoutRef.current) {
-      clearTimeout(simTimeoutRef.current);
-    }
-    setIsRecording(false);
-  };
-
   // Microphone toggle button handler
   const handleMicToggle = () => {
     if (isRecording) {
-      if (simulationMode) {
-        stopSimulation();
-      } else if (recognitionRef.current) {
+      if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     } else {
@@ -259,16 +222,15 @@ export function PronunciationPage() {
       setScoreDetails([]);
       setErrorMessage('');
 
-      if (simulationMode) {
-        startSimulation();
-      } else if (recognitionRef.current) {
+      if (recognitionRef.current) {
         try {
           recognitionRef.current.start();
         } catch (e) {
           console.error(e);
-          // If starting failed (sometimes already running), force stop first
           recognitionRef.current.stop();
         }
+      } else {
+        setErrorMessage('Trình duyệt của bạn hiện chưa hỗ trợ nhận dạng giọng nói. Vui lòng thử Chrome/Edge hoặc bật microphone.');
       }
     }
   };
@@ -312,24 +274,13 @@ export function PronunciationPage() {
           </p>
         </div>
 
-        {/* Browser support badge / Simulation Toggle */}
+        {/* Browser support badge */}
         <div className="flex items-center gap-2">
           {!supportSpeech && (
             <span className="text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-600 px-2 py-1 rounded-lg flex items-center gap-1.5 animate-pulse">
-              <AlertCircle className="w-3.5 h-3.5" /> Chế độ mô phỏng
+              <AlertCircle className="w-3.5 h-3.5" /> Trình duyệt chưa hỗ trợ nhận dạng giọng nói
             </span>
           )}
-          <button
-            onClick={() => setSimulationMode(!simulationMode)}
-            className={`text-[10px] font-extrabold px-3 py-1.5 rounded-lg border transition-all duration-200 ${
-              simulationMode 
-                ? 'bg-blue-50 border-blue-200 text-blue-600 shadow-sm'
-                : 'bg-white border-slate-200 text-slate-500 hover:text-slate-800'
-            }`}
-            title="Luyện tập tự động không cần micro"
-          >
-            Chế độ mô phỏng: {simulationMode ? 'BẬT' : 'TẮT'}
-          </button>
         </div>
       </div>
 

@@ -29,6 +29,7 @@ export function FlashcardPage() {
 
   // Selected deck state (null means show selector, otherwise is the selected deck object)
   const [selectedDeck, setSelectedDeck] = useState(null);
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   // Search state inside active deck study
   const [searchQuery, setSearchQuery] = useState('');
@@ -156,6 +157,17 @@ export function FlashcardPage() {
   };
 
   const decks = getDecks();
+
+  // Auto-select the 'all' deck on initial mount
+  useEffect(() => {
+    if (!selectedDeck && !hasAutoSelected && vocabList.length > 0) {
+      const defaultDeck = decks.find(d => d.id === 'all');
+      if (defaultDeck) {
+        setSelectedDeck(defaultDeck);
+        setHasAutoSelected(true);
+      }
+    }
+  }, [vocabList, selectedDeck, hasAutoSelected, decks]);
 
   // If a deck is selected, fetch its fresh words from the store dynamically
   const getSelectedDeckWords = () => {
@@ -473,14 +485,6 @@ export function FlashcardPage() {
             </span>
           </div>
         </div>
-
-        <button
-          onClick={() => setSelectedDeck(null)}
-          className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-200/60 hover:border-blue-100 px-4 py-2 rounded-xl transition-all duration-200"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Học phần khác</span>
-        </button>
       </div>
 
       {/* 2. QUIZLET FLASHCARD PLAYER INTERFACE */}

@@ -17,7 +17,7 @@ export function ReaderContent({ content }) {
   const handleWordClick = (e, wordToken, fullSentenceText) => {
     e.stopPropagation();
     if (!wordToken.isWord) return;
-    
+
     // Set word details
     setSelectedWord({
       text: wordToken.text,
@@ -31,7 +31,7 @@ export function ReaderContent({ content }) {
   };
 
   return (
-    <div 
+    <div
       className="space-y-6 select-text max-w-3xl mx-auto py-4 font-sans focus:outline-none"
       style={{ fontSize: `${fontSize}px` }}
     >
@@ -40,8 +40,8 @@ export function ReaderContent({ content }) {
         const sentences = splitSentences(paraText);
 
         return (
-          <p 
-            key={pIdx} 
+          <p
+            key={pIdx}
             className="leading-loose tracking-wide whitespace-pre-wrap transition-colors duration-200"
           >
             {sentences.map((sentText, sIdx) => {
@@ -49,8 +49,8 @@ export function ReaderContent({ content }) {
               const tokens = segmentChineseText(sentText);
 
               return (
-                <span 
-                  key={sIdx} 
+                <span
+                  key={sIdx}
                   className="sentence-span hover:bg-blue-500/[0.03] transition-colors rounded px-0.5"
                 >
                   {tokens.map((token, tIdx) => {
@@ -70,11 +70,10 @@ export function ReaderContent({ content }) {
                       <span
                         key={tIdx}
                         onClick={(e) => handleWordClick(e, token, sentText)}
-                        className={`inline-block mx-0.5 relative group cursor-pointer transition-all duration-150 py-1 ${
-                          saved 
-                            ? 'border-b-2 border-blue-500 text-blue-600 font-semibold bg-blue-50/50 px-0.5 rounded-t-md' 
+                        className={`inline-block mx-0.5 relative group cursor-pointer transition-all duration-150 py-1 ${saved
+                            ? 'border-b-2 border-blue-500 text-blue-600 font-semibold bg-blue-50/50 px-0.5 rounded-t-md'
                             : 'hover:text-blue-600 hover:bg-blue-50/70 rounded px-0.5'
-                        }`}
+                          }`}
                       >
                         {showPinyin && token.pinyin ? (
                           <ruby className="ruby-align flex flex-col items-center">
