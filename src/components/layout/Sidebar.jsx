@@ -7,7 +7,8 @@ import {
   Sparkles,
   Mic,
   TrendingUp,
-  LayoutDashboard
+  LayoutDashboard,
+  Repeat
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import logoImg from '../../assets/logo.jpg';
@@ -20,6 +21,7 @@ export function Sidebar() {
     { to: '/dashboard', label: 'Tiến trình', icon: TrendingUp },
     { to: '/flashcards', label: 'Flashcard', icon: Layers },
     { to: '/reader', label: 'Dịch thuật', icon: BookOpen },
+    { to: '/review', label: 'Ôn tập', icon: Repeat },
     { to: '/pronunciation', label: 'Luyện phát âm', icon: Mic },
   ];
 
