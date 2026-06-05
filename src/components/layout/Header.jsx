@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Flame, Sparkles, LogOut, Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import logoImg from '../../assets/logo.jpg';
+import logoImg from '../../assets/logo.png';
 
 export function Header({ offsetTop }) {
   const { user, logout } = useAuthStore();
@@ -24,79 +24,76 @@ export function Header({ offsetTop }) {
   };
 
   return (
-    <header className={`fixed ${offsetTop ? 'top-14' : 'top-4'} left-1/2 -translate-x-1/2 max-w-7xl w-[calc(100%-2rem)] px-6 py-3 flex items-center justify-between z-50 bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-100/80 shadow-[0_8px_30px_rgb(15,23,42,0.04)] transition-all duration-300`}>
-      {/* Brand Logo */}
-      <NavLink to="/" className="flex items-center gap-3.5 shrink-0 hover:opacity-95 transition-opacity group">
-        <img 
-          src={logoImg} 
-          className="w-12 h-12 md:w-14 md:h-14 object-contain rounded-2xl shadow-sm border border-slate-100 group-hover:scale-105 transition-transform duration-300" 
-          alt="Hanora logo" 
-        />
-        <div className="hidden sm:block">
-          <h1 className="text-base md:text-lg font-extrabold text-slate-900 tracking-wide font-display leading-tight group-hover:text-blue-600 transition-colors">Hanora</h1>
-          <p className="text-[10px] text-blue-500 font-bold tracking-widest uppercase leading-none mt-0.5">Trung Tâm Học Tập</p>
-        </div>
-      </NavLink>
+    <header className={`fixed ${offsetTop ? 'top-10' : 'top-0'} left-0 w-full px-6 md:px-12 h-20 flex items-center justify-between z-50 bg-[#32A0F4]/95 backdrop-blur-md border-b border-white/20 shadow-[0_10px_40px_rgba(50,160,244,0.3)] transition-all duration-300`}>
+      {/* Left: Brand Logo */}
+      <div className="flex items-center gap-3 shrink-0">
+        <NavLink to="/" className="hover:opacity-90 transition-opacity group">
+          <img 
+            src={logoImg} 
+            className="h-12 md:h-16 w-auto object-contain brightness-0 invert filter transition-transform duration-500 group-hover:scale-105" 
+            alt="Hanora logo" 
+          />
+        </NavLink>
+      </div>
 
-      {/* Navigation links list */}
-      <nav className="hidden lg:flex items-center gap-1 bg-slate-50/50 border border-slate-100/80 rounded-xl p-1">
+      {/* Center: Navigation links list */}
+      <nav className="hidden lg:flex items-center gap-10">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.end}
             className={({ isActive }) =>
-              `font-semibold text-[13px] px-3.5 py-1.5 rounded-lg transition-all duration-200 ${
+              `relative font-bold text-[15px] py-2 transition-all duration-300 group tracking-tight ${
                 isActive
-                  ? 'text-blue-600 bg-white shadow-sm'
-                  : 'text-slate-600 hover:text-blue-600 hover:bg-white/50'
+                  ? 'text-white'
+                  : 'text-white/70 hover:text-white'
               }`
             }
           >
-            {item.label}
+            {({ isActive }) => (
+              <>
+                {item.label}
+                <span className={`absolute bottom-[-4px] left-0 w-full h-[3px] bg-white rounded-full transition-all duration-300 transform origin-center ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
 
-      {/* Right Stats & Actions */}
-      <div className="flex items-center gap-2 md:gap-3.5 shrink-0">
+      {/* Right: Actions / CTA */}
+      <div className="flex items-center gap-4 shrink-0">
         {user ? (
-          <>
-            {/* Streak & XP info */}
-            <div className="hidden sm:flex items-center gap-3 bg-slate-50/80 border border-slate-100 rounded-xl px-3 py-1.5 text-xs font-bold">
-              <div className="flex items-center gap-1 text-orange-500" title="Streak ngày">
-                <Flame className="w-4 h-4 fill-orange-500/10 animate-pulse" />
-                <span>{user.streak} ngày</span>
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-5 text-[11px] font-black uppercase tracking-widest text-white/80">
+               <div className="flex items-center gap-1.5 text-white">
+                <Flame className="w-4 h-4 fill-white/20" />
+                <span>{user.streak} NGÀY</span>
               </div>
-              <div className="w-[1px] h-3 bg-slate-200"></div>
-              <div className="flex items-center gap-1 text-blue-600" title="Điểm kinh nghiệm (XP)">
-                <Sparkles className="w-3.5 h-3.5 fill-blue-500/10" />
+              <div className="flex items-center gap-1.5 text-white">
+                <Sparkles className="w-3.5 h-3.5 fill-white/20" />
                 <span>{user.xp} XP</span>
               </div>
             </div>
-
-            {/* User Profile avatar info / actions */}
-            <div className="flex items-center gap-2">
-              <NavLink 
-                to="/dashboard" 
-                className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-sm hover:bg-blue-100 transition-colors"
-                title="Bảng điều khiển & Tiến trình"
-              >
-                {user.name.charAt(0)}
-              </NavLink>
-              <button
-                onClick={handleLogout}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
-                title="Đăng xuất"
-              >
-                <LogOut className="w-4.5 h-4.5" />
-              </button>
-            </div>
-          </>
+            
+            <NavLink 
+              to="/dashboard" 
+              className="w-10 h-10 rounded-full bg-white/20 text-white border border-white/30 flex items-center justify-center font-black text-sm hover:bg-white hover:text-[#32A0F4] transition-all shadow-lg"
+            >
+              {user.name.charAt(0)}
+            </NavLink>
+            <button
+              onClick={handleLogout}
+              className="p-1 px-2 text-white/70 hover:text-white transition-colors"
+              title="Đăng xuất"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         ) : (
           <NavLink 
             to="/login"
-            className="px-4 py-2 text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-sky-500 rounded-xl hover:from-blue-500 hover:to-sky-400 shadow-sm active:scale-95 transition-all"
+            className="px-8 py-2.5 text-sm font-black text-[#32A0F4] bg-white hover:bg-slate-50 rounded-lg shadow-xl active:scale-95 transition-all text-center uppercase tracking-widest"
           >
             Đăng nhập
           </NavLink>
@@ -105,16 +102,15 @@ export function Header({ offsetTop }) {
         {/* Mobile menu toggle */}
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="lg:hidden p-2 text-slate-500 hover:text-blue-600 rounded-xl hover:bg-slate-50 transition-colors"
-          title="Menu"
+          className="lg:hidden p-2 text-white hover:text-white/80 transition-colors"
         >
-          {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
         </button>
       </div>
 
       {/* Mobile Navigation Drawer */}
       {isMenuOpen && (
-        <div className="absolute top-[calc(100%+0.5rem)] left-0 w-full bg-white border border-slate-100/80 rounded-2xl p-4 shadow-xl flex flex-col gap-2 z-50 animate-scale-in lg:hidden">
+        <div className="absolute top-full left-0 w-full bg-[#32A0F4] border-t border-white/20 p-8 flex flex-col gap-5 z-50 lg:hidden shadow-2xl animate-in slide-in-from-top-4 duration-300">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -122,10 +118,8 @@ export function Header({ offsetTop }) {
               end={item.end}
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `font-semibold text-sm px-4 py-3 rounded-xl transition-all duration-200 flex items-center justify-between ${
-                  isActive
-                    ? 'text-blue-600 bg-blue-50/80 border-l-[3px] border-blue-500 pl-[13px]'
-                    : 'text-slate-650 hover:text-blue-600 hover:bg-slate-50'
+                `font-black text-lg py-1 transition-all ${
+                  isActive ? 'text-white border-l-4 border-white pl-4' : 'text-white/70 pl-0'
                 }`
               }
             >
@@ -133,17 +127,12 @@ export function Header({ offsetTop }) {
             </NavLink>
           ))}
           {user && (
-            <div className="border-t border-slate-100 pt-3 mt-1 flex items-center justify-end text-xs text-slate-500 font-bold px-2">
-              <button 
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  handleLogout();
-                }}
-                className="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors animate-pulse"
-              >
-                <LogOut className="w-4 h-4" /> Đăng xuất
-              </button>
-            </div>
+            <button 
+              onClick={() => { setIsMenuOpen(false); handleLogout(); }}
+              className="text-white/90 font-black text-lg text-left mt-4 uppercase tracking-widest border-t border-white/20 pt-4"
+            >
+              Đăng xuất
+            </button>
           )}
         </div>
       )}
