@@ -77,7 +77,7 @@ export function Header({ offsetTop }) {
             </div>
             
             <NavLink 
-              to="/dashboard" 
+              to="/profile" 
               className="w-10 h-10 rounded-full bg-white/20 text-white border border-white/30 flex items-center justify-center font-black text-sm hover:bg-white hover:text-[#32A0F4] transition-all shadow-lg"
             >
               {user.name.charAt(0)}

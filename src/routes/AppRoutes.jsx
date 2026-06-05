@@ -105,7 +105,12 @@ export function AppRoutes() {
           <ProtectedRoute>
             <MainLayout>
               <PronunciationPracticePage />
+            </MainLayout>
+          </ProtectedRoute>
+        } 
+      />
 
+      <Route 
         path="/profile" 
         element={
           <ProtectedRoute>
