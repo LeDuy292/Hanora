@@ -23,15 +23,7 @@ export function AppRoutes() {
       {/* Public Route */}
       <Route
         path="/"
-        element={isAuthenticated ? (
-          <ProtectedRoute>
-            <MainLayout>
-              <DashboardPage />
-            </MainLayout>
-          </ProtectedRoute>
-        ) : (
-          <LandingPage />
-        )}
+        element={<LandingPage />}
       />
       <Route 
         path="/login" 
