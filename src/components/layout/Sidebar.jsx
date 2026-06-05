@@ -8,7 +8,7 @@ import {
   Mic,
   TrendingUp,
   LayoutDashboard,
-  Repeat
+  BookMarked
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import logoImg from '../../assets/logo.png';
@@ -19,9 +19,9 @@ export function Sidebar() {
   const navItems = [
     { to: '/', label: 'Trang chủ', icon: LayoutDashboard, end: true },
     { to: '/dashboard', label: 'Tiến trình', icon: TrendingUp },
+    { to: '/vocabulary', label: 'Từ vựng', icon: BookMarked },
     { to: '/flashcards', label: 'Flashcard', icon: Layers },
     { to: '/reader', label: 'Dịch thuật', icon: BookOpen },
-    { to: '/review', label: 'Ôn tập', icon: Repeat },
     { to: '/pronunciation', label: 'Luyện phát âm', icon: Mic },
   ];
 
@@ -42,13 +42,17 @@ export function Sidebar() {
 
       {/* User Stats Card */}
       {user && (
-        <div className="p-4 mx-4 my-6 bg-slate-50/50 border border-slate-100 rounded-2xl flex flex-col gap-3">
+        <NavLink 
+          to="/profile"
+          className="p-4 mx-4 my-6 bg-slate-50/50 hover:bg-blue-55/5 border border-slate-100 hover:border-blue-200/50 rounded-2xl flex flex-col gap-3 transition-all group/card cursor-pointer"
+          title="Trang cá nhân & Thiết lập"
+        >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm group-hover/card:from-blue-600 group-hover/card:to-sky-450 group-hover/card:text-white transition-all duration-300">
               {user.name.charAt(0)}
             </div>
             <div className="overflow-hidden">
-              <h4 className="text-xs font-semibold text-slate-800 truncate">{user.name}</h4>
+              <h4 className="text-xs font-semibold text-slate-800 truncate group-hover/card:text-blue-600 transition-colors">{user.name}</h4>
               <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded-md border border-amber-500/20">
                 <Award className="w-3 h-3" /> {user.level}
               </span>
@@ -71,7 +75,7 @@ export function Sidebar() {
               </div>
             </div>
           </div>
-        </div>
+        </NavLink>
       )}
 
       {/* Navigation List */}

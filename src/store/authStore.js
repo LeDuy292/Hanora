@@ -2,14 +2,23 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const DEFAULT_USER = {
-  name: "Hanora Scholar",
-  email: "learner@hanora.com",
+  name: "Nguyen Minh",
+  email: "nguyenminh@gmail.com",
   streak: 8,
   xp: 320,
   level: "HSK 2",
   targetDailyMinutes: 20,
   todayMinutes: 12,
-  avatar: null
+  avatar: null,
+  joinedDate: "March 15, 2024",
+  isPro: true,
+  preferences: {
+    darkMode: false,
+    interfaceLanguage: "English",
+    pronunciationSpeed: "Normal",
+    dailyGoalMinutes: 30,
+    defaultFlashcardMode: "Flashcard (Q -> A)"
+  }
 };
 
 export const useAuthStore = create(
@@ -21,8 +30,8 @@ export const useAuthStore = create(
       login: (email, name) => set({
         user: {
           ...DEFAULT_USER,
-          name: name || "Hanora Scholar",
-          email: email,
+          name: name || "Nguyen Minh",
+          email: email || "nguyenminh@gmail.com",
         },
         isAuthenticated: true
       }),
@@ -31,6 +40,16 @@ export const useAuthStore = create(
       
       updateProfile: (updatedData) => set((state) => ({
         user: state.user ? { ...state.user, ...updatedData } : null
+      })),
+      
+      updatePreferences: (updatedPrefs) => set((state) => ({
+        user: state.user ? {
+          ...state.user,
+          preferences: {
+            ...(state.user.preferences || DEFAULT_USER.preferences),
+            ...updatedPrefs
+          }
+        } : null
       })),
       
       addXp: (amount) => set((state) => {

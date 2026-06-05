@@ -67,11 +67,11 @@ export function MainLayout({ children }) {
   };
 
   const handleGoToReview = () => {
-    navigate('/review');
+    navigate('/flashcards');
   };
 
-  const isReviewPage = location.pathname === '/review';
-  const displayBanner = showBanner && !isReviewPage;
+  const isFlashcardPage = location.pathname === '/flashcards';
+  const displayBanner = showBanner && !isFlashcardPage;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans relative overflow-x-hidden">

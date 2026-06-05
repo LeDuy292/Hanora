@@ -12,8 +12,8 @@ export function Header({ offsetTop }) {
   const navItems = [
     { to: '/', label: 'Trang chủ', end: true },
     { to: '/dashboard', label: 'Tiến trình' },
+    { to: '/vocabulary', label: 'Từ vựng' },
     { to: '/flashcards', label: 'Flashcard' },
-    { to: '/review', label: 'Ôn tập' },
     { to: '/reader', label: 'Dịch thuật' },
     { to: '/pronunciation', label: 'Luyện phát âm' },
   ];
@@ -90,6 +90,7 @@ export function Header({ offsetTop }) {
               <LogOut className="w-5 h-5" />
             </button>
           </div>
+
         ) : (
           <NavLink 
             to="/login"

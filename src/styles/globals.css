@@ -6,9 +6,12 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  html, body, button, input, textarea, select, optgroup, option {
     font-family: var(--font-sans);
     font-weight: 500;
+  }
+
+  body {
     background-color: rgb(248, 250, 252); /* slate-50 equivalent */
   }
 

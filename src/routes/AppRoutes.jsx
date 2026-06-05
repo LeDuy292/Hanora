@@ -8,10 +8,12 @@ import { LandingPage } from '../pages/LandingPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ReaderPage } from '../pages/ReaderPage';
 import { FlashcardPage } from '../pages/FlashcardPage';
+import { VocabularyPage } from '../pages/VocabularyPage';
 import { PronunciationPage } from '../pages/PronunciationPage';
-import { ReviewPage } from '../pages/ReviewPage';
 import { LoginPage } from '../pages/LoginPage';
 import { PronunciationPracticePage } from '../pages/PronunciationPracticePage';
+import { ProfilePage } from '../pages/ProfilePage';
+
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuthStore();
@@ -63,7 +65,13 @@ export function AppRoutes() {
       />
       <Route 
         path="/vocabulary" 
-        element={<Navigate to="/flashcards" replace />} 
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <VocabularyPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } 
       />
       <Route 
         path="/flashcards" 
@@ -71,16 +79,6 @@ export function AppRoutes() {
           <ProtectedRoute>
             <MainLayout>
               <FlashcardPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/review" 
-        element={
-          <ProtectedRoute>
-            <MainLayout>
-              <ReviewPage />
             </MainLayout>
           </ProtectedRoute>
         } 
@@ -107,6 +105,12 @@ export function AppRoutes() {
           <ProtectedRoute>
             <MainLayout>
               <PronunciationPracticePage />
+
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <ProfilePage />
             </MainLayout>
           </ProtectedRoute>
         } 

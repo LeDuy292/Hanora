@@ -21,6 +21,7 @@ import { useDocumentStore } from '../store/documentStore';
 import { useVocabularyStore } from '../store/vocabularyStore';
 import { Button } from '../components/common/Button';
 import { formatDate } from '../utils/formatDate';
+import pandaImg from '../assets/Gemini_Generated_Image_idwcryidwcryidwc.png';
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -65,6 +66,14 @@ export function DashboardPage() {
     }
     return false;
   };
+
+  const streakDisplayDays = weekDays.map((day, idx) => ({
+    ...day,
+    completed: isDayCompleted(idx),
+    today: idx === todayIdx,
+  }));
+
+  const streakLength = user?.streak || 0;
 
   // Vocabulary HSK stats grouping
   const hsk1Count = vocabList.filter(v => v.hsk === 1).length;
@@ -312,58 +321,79 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Streak Consistency Calendar */}
-        <div className="lg:col-span-7 bg-white border border-slate-100 rounded-3xl p-6 flex flex-col justify-between gap-6 shadow-sm">
-          <div className="w-full flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-orange-500" />
-              Lịch Học Chuyên Cần
-            </h3>
-            <span className="text-xs text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-100">
-              Chuỗi: {user?.streak || 0} ngày
-            </span>
+        {/* Streak card with daily sequence */}
+        <div className="lg:col-span-7 relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-700 via-blue-600 to-indigo-700 p-6 shadow-xl text-white">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-white/10 blur-3xl"></div>
+          <div className="pointer-events-none absolute right-6 top-8 h-24 w-24 rounded-full bg-white/20"></div>
+
+          <div className="flex flex-col xl:flex-row justify-between items-start gap-6">
+            <div className="max-w-xl">
+              <span className="text-[10px] uppercase tracking-[0.35em] text-sky-100/80 font-semibold">
+                Chuỗi ngày học
+              </span>
+              <div className="mt-4 flex items-end gap-4">
+                <div>
+                  <h3 className="text-[3.5rem] font-extrabold tracking-tight text-white leading-none">
+                    {streakLength}
+                  </h3>
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-sky-100/80 mt-1">
+                    ngày liên tiếp
+                  </p>
+                </div>
+                <div className="rounded-[1.7rem] bg-white/15 px-4 py-3 border border-white/20 shadow-inner flex items-center justify-center">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 via-amber-300 to-rose-400 shadow-[0_14px_32px_-18px_rgba(252,165,24,0.9)]">
+                    <Flame className="h-5 w-5 text-white drop-shadow-lg" />
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative flex-shrink-0">
+              <div className="absolute inset-0 rounded-3xl border border-white/20 bg-white/10 blur-sm"></div>
+              <img
+                src={pandaImg}
+                alt="Panda streak"
+                className="relative z-10 h-36 w-36 rounded-[2rem] object-cover shadow-2xl shadow-slate-900/10"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-2.5 py-1">
-            {weekDays.map((day, idx) => {
-              const active = idx === todayIdx;
-              const completed = isDayCompleted(idx);
+          <div className="mt-8 rounded-[2rem] bg-white/10 border border-white/15 p-4 shadow-inner">
+            <div className="flex justify-between items-center gap-4 mb-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.35em] text-sky-100/80 font-semibold">
+                  Tuần này
+                </p>
+                <p className="text-xs text-sky-100/80 mt-1">Hoàn thành mỗi ngày để giữ streak tiếp tục.</p>
+              </div>
+              <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-sky-100/80 border border-white/15">
+                {streakLength} ngày
+              </div>
+            </div>
 
-              return (
-                <div 
-                  key={idx} 
-                  className={`flex flex-col items-center p-2.5 rounded-xl border transition-all ${
-                    active 
-                      ? 'bg-blue-50/50 border-blue-200 text-blue-900 shadow-sm' 
-                      : 'bg-slate-50/40 border-slate-100 text-slate-500'
-                  }`}
-                  title={`${day.label}${active ? ' (Hôm nay)' : ''}`}
-                >
-                  <span className="text-[9px] font-bold uppercase tracking-wider block mb-1.5">
-                    {day.name}
-                  </span>
-                  
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all ${
-                    completed
-                      ? 'bg-blue-100/60 border-blue-200 text-blue-600 font-bold'
-                      : active
-                        ? 'bg-white border-slate-200 text-slate-400'
-                        : 'bg-slate-50/50 border-slate-100 text-slate-300'
-                  }`}>
-                    {completed ? (
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+            <div className="grid grid-cols-7 gap-2">
+              {streakDisplayDays.map((day, idx) => (
+                <div key={idx} className="flex flex-col items-center gap-2">
+                  <div className={`relative flex h-12 w-12 items-center justify-center rounded-3xl border text-sm font-bold transition ${day.completed ? 'bg-white text-sky-700 border-white shadow-sm' : day.today ? 'border-orange-300 bg-orange-100/20 text-white shadow-[0_0_0_4px_rgba(255,255,255,0.08)]' : 'border-white/15 bg-white/10 text-sky-100'}`}>
+                    {day.completed ? (
+                      <Check className="h-4 w-4" />
+                    ) : day.today ? (
+                      <Flame className="h-4 w-4" />
                     ) : (
-                      <span className="text-[10px] font-semibold">{day.name === 'CN' ? 'C' : idx + 2}</span>
+                      day.name
                     )}
                   </div>
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-sky-100/80">
+                    {day.name}
+                  </span>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
 
-          <p className="text-xs text-slate-500 font-medium leading-relaxed">
-            Học tập mỗi ngày để không đứt chuỗi Streak. Học tối thiểu 5 ngày để mở khóa danh hiệu Chiến thần chuyên cần.
-          </p>
+          <div className="mt-6 text-sm leading-relaxed text-sky-100/80">
+            Tiếp tục học mỗi ngày và giữ chuỗi ổn định. Bạn đang trên đường xây dựng thói quen học tiếng Trung bền vững.
+          </div>
         </div>
 
       </div>
