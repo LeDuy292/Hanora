@@ -11,7 +11,9 @@ import { FlashcardPage } from '../pages/FlashcardPage';
 import { VocabularyPage } from '../pages/VocabularyPage';
 import { PronunciationPage } from '../pages/PronunciationPage';
 import { LoginPage } from '../pages/LoginPage';
+import { PronunciationPracticePage } from '../pages/PronunciationPracticePage';
 import { ProfilePage } from '../pages/ProfilePage';
+
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuthStore();
@@ -98,6 +100,12 @@ export function AppRoutes() {
       />
 
       <Route 
+        path="/pronunciation/practice/:id" 
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <PronunciationPracticePage />
+
         path="/profile" 
         element={
           <ProtectedRoute>

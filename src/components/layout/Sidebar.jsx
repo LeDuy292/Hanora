@@ -11,7 +11,7 @@ import {
   BookMarked
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import logoImg from '../../assets/logo.jpg';
+import logoImg from '../../assets/logo.png';
 
 export function Sidebar() {
   const { user } = useAuthStore();
