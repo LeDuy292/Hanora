@@ -38,6 +38,10 @@ export default {
           950: '#070a13', // ultra dark deep blue-slate
         }
       },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+      },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out forwards',
         'slide-up': 'slideUp 0.4s ease-out forwards',

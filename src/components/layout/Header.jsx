@@ -12,8 +12,8 @@ export function Header({ offsetTop }) {
   const navItems = [
     { to: '/', label: 'Trang chủ', end: true },
     { to: '/dashboard', label: 'Tiến trình' },
+    { to: '/vocabulary', label: 'Từ vựng' },
     { to: '/flashcards', label: 'Flashcard' },
-    { to: '/review', label: 'Ôn tập' },
     { to: '/reader', label: 'Dịch thuật' },
     { to: '/pronunciation', label: 'Luyện phát âm' },
   ];
@@ -78,9 +78,9 @@ export function Header({ offsetTop }) {
             {/* User Profile avatar info / actions */}
             <div className="flex items-center gap-2">
               <NavLink 
-                to="/dashboard" 
+                to="/profile" 
                 className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-sm hover:bg-blue-100 transition-colors"
-                title="Bảng điều khiển & Tiến trình"
+                title="Trang cá nhân & Thiết lập"
               >
                 {user.name.charAt(0)}
               </NavLink>
