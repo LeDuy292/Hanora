@@ -31,8 +31,59 @@ const INITIAL_VOCABULARY = [
     difficulty: "hard",
     srsLevel: 0,
     nextReviewDate: new Date().toISOString().split('T')[0], // Due today!
+  },
+  {
+    text: "谢谢",
+    pinyin: "xièxie",
+    translation: "to thank; thanks",
+    hsk: 1,
+    dateAdded: "2026-06-01",
+    difficulty: "easy",
+    srsLevel: 4,
+    nextReviewDate: new Date().toISOString().split('T')[0],
+  },
+  {
+    text: "再见",
+    pinyin: "zàijiàn",
+    translation: "goodbye; see you again",
+    hsk: 1,
+    dateAdded: "2026-06-02",
+    difficulty: "medium",
+    srsLevel: 3,
+    nextReviewDate: new Date().toISOString().split('T')[0],
+  },
+  {
+    text: "苹果",
+    pinyin: "píngguǒ",
+    translation: "apple",
+    hsk: 1,
+    dateAdded: "2026-06-02",
+    difficulty: "easy",
+    srsLevel: 4,
+    nextReviewDate: new Date().toISOString().split('T')[0],
+  },
+  {
+    text: "面包",
+    pinyin: "miànbāo",
+    translation: "bread",
+    hsk: 1,
+    dateAdded: "2026-06-03",
+    difficulty: "easy",
+    srsLevel: 4,
+    nextReviewDate: new Date().toISOString().split('T')[0],
+  },
+  {
+    text: "医生",
+    pinyin: "yīshēng",
+    translation: "doctor",
+    hsk: 1,
+    dateAdded: "2026-06-03",
+    difficulty: "medium",
+    srsLevel: 1,
+    nextReviewDate: new Date().toISOString().split('T')[0],
   }
 ];
+
 
 export const useVocabularyStore = create(
   persist(
@@ -112,7 +163,21 @@ export const useVocabularyStore = create(
       getReviewQueue: () => {
         const todayStr = new Date().toISOString().split('T')[0];
         return get().vocabList.filter(item => item.nextReviewDate <= todayStr);
-      }
+      },
+
+      updateWordSrsLevel: (text, newSrsLevel) => set((state) => {
+        const updatedList = state.vocabList.map(item => {
+          if (item.text !== text) return item;
+          
+          return {
+            ...item,
+            srsLevel: newSrsLevel,
+            nextReviewDate: new Date().toISOString().split('T')[0]
+          };
+        });
+        
+        return { vocabList: updatedList };
+      })
     }),
     {
       name: 'hanora-vocabulary-storage',
