@@ -16,6 +16,10 @@ import logoImg from '../../assets/logo.png';
 export function Sidebar() {
   const { user } = useAuthStore();
 
+  // Safe display helpers — backend users may not have every field.
+  const displayName = user?.name || user?.username || user?.email || 'Học viên';
+  const initial = displayName.charAt(0).toUpperCase();
+
   const navItems = [
     { to: '/', label: 'Trang chủ', icon: LayoutDashboard, end: true },
     { to: '/dashboard', label: 'Tiến trình', icon: TrendingUp },
@@ -48,30 +52,39 @@ export function Sidebar() {
           title="Trang cá nhân & Thiết lập"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm group-hover/card:from-blue-600 group-hover/card:to-sky-450 group-hover/card:text-white transition-all duration-300">
-              {user.name.charAt(0)}
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm group-hover/card:from-blue-600 group-hover/card:to-sky-450 group-hover/card:text-white transition-all duration-300 overflow-hidden">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={displayName}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                initial
+              )}
             </div>
             <div className="overflow-hidden">
-              <h4 className="text-xs font-semibold text-slate-800 truncate group-hover/card:text-blue-600 transition-colors">{user.name}</h4>
+              <h4 className="text-xs font-semibold text-slate-800 truncate group-hover/card:text-blue-600 transition-colors">{displayName}</h4>
               <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded-md border border-amber-500/20">
-                <Award className="w-3 h-3" /> {user.level}
+                <Award className="w-3 h-3" /> {user.level || 'HSK 1'}
               </span>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-2.5 mt-0.5">
             <div className="flex flex-col">
               <span className="text-[10px] text-slate-400 font-medium">Streak</span>
               <div className="flex items-center gap-1.5 text-xs font-bold text-orange-500">
                 <Flame className="w-4 h-4 fill-orange-500/10" />
-                {user.streak} ngày
+                {user.streak ?? 0} ngày
               </div>
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] text-slate-400 font-medium">XP points</span>
               <div className="flex items-center gap-1 text-xs font-bold text-blue-600">
                 <Sparkles className="w-3.5 h-3.5 fill-blue-500/10" />
-                {user.xp}
+                {user.xp ?? 0}
               </div>
             </div>
           </div>
