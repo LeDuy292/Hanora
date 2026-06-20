@@ -9,6 +9,10 @@ export function Header({ offsetTop }) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Safe display helpers — backend users may not have every field.
+  const displayName = user?.name || user?.username || user?.email || 'Học viên';
+  const initial = displayName.charAt(0).toUpperCase();
+
   const navItems = [
     { to: '/', label: 'Trang chủ', end: true },
     { to: '/dashboard', label: 'Tiến trình' },
@@ -68,19 +72,29 @@ export function Header({ offsetTop }) {
             <div className="hidden sm:flex items-center gap-5 text-[11px] font-black uppercase tracking-widest text-white/80">
                <div className="flex items-center gap-1.5 text-white">
                 <Flame className="w-4 h-4 fill-white/20" />
-                <span>{user.streak} NGÀY</span>
+                <span>{user.streak ?? 0} NGÀY</span>
               </div>
               <div className="flex items-center gap-1.5 text-white">
                 <Sparkles className="w-3.5 h-3.5 fill-white/20" />
-                <span>{user.xp} XP</span>
+                <span>{user.xp ?? 0} XP</span>
               </div>
             </div>
-            
-            <NavLink 
-              to="/profile" 
-              className="w-10 h-10 rounded-full bg-white/20 text-white border border-white/30 flex items-center justify-center font-black text-sm hover:bg-white hover:text-[#32A0F4] transition-all shadow-lg"
+
+            <NavLink
+              to="/profile"
+              title={displayName}
+              className="w-10 h-10 rounded-full bg-white/20 text-white border border-white/30 flex items-center justify-center font-black text-sm hover:bg-white hover:text-[#32A0F4] transition-all shadow-lg overflow-hidden"
             >
-              {user.name.charAt(0)}
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={displayName}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                initial
+              )}
             </NavLink>
             <button
               onClick={handleLogout}

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Globe, ShieldCheck, Info } from 'lucide-react';
+import { loadGoogleScript, GOOGLE_CLIENT_ID } from '../services/authService';
+import { Globe, Info, Loader2 } from 'lucide-react';
 
 import backgroundLogin from '../assets/backgroundLogin.png';
 import cover1 from '../assets/cover1.png';
@@ -26,7 +27,7 @@ const DECK_COVERS = [
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuthStore();
+  const { login, register, googleLogin, isLoading, error: storeError, clearError } = useAuthStore();
 
   const [isSignUp, setIsSignUp] = useState(() => {
     return location.state?.isSignUp === true;
@@ -34,30 +35,77 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
 
-  const handleSubmit = (e) => {
+  const googleBtnRef = useRef(null);
+  const [googleReady, setGoogleReady] = useState(false);
+  const [googleError, setGoogleError] = useState(
+    GOOGLE_CLIENT_ID ? '' : 'Chưa cấu hình Google Client ID.'
+  );
+
+  const error = localError || storeError;
+  const redirectTo = location.state?.from || '/dashboard';
+
+  const handleGoogleCredential = async (response) => {
+    setLocalError('');
+    const ok = await googleLogin(response.credential);
+    if (ok) navigate(redirectTo, { replace: true });
+  };
+
+  // Initialise Google Identity Services and render its button.
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!GOOGLE_CLIENT_ID) return;
+
+    loadGoogleScript()
+      .then(() => {
+        if (cancelled || !window.google?.accounts?.id) return;
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCredential,
+        });
+        if (googleBtnRef.current) {
+          googleBtnRef.current.innerHTML = '';
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'rectangular',
+            logo_alignment: 'center',
+            width: 340,
+          });
+        }
+        setGoogleReady(true);
+      })
+      .catch((err) => setGoogleError(err.message));
+
+    return () => { cancelled = true; };
+    // Re-render the button when toggling sign-up/sign-in (the node remounts).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSignUp]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLocalError('');
+    clearError();
 
     if (!email || !password) {
-      setError('Vui lòng điền đầy đủ email/số điện thoại và mật khẩu.');
+      setLocalError('Vui lòng điền đầy đủ email và mật khẩu.');
       return;
     }
 
     if (isSignUp && !name) {
-      setError('Vui lòng điền họ và tên.');
+      setLocalError('Vui lòng điền họ và tên.');
       return;
     }
 
-    // Call store login and redirect to workspace dashboard
-    login(email, name);
-    navigate('/dashboard');
-  };
+    const ok = isSignUp
+      ? await register(name, email, password)
+      : await login(email, password);
 
-  const handleDemoLogin = () => {
-    login('demo@hanora.com', 'Học viên Hanora');
-    navigate('/dashboard');
+    if (ok) navigate(redirectTo, { replace: true });
   };
 
   return (
@@ -126,10 +174,10 @@ export function LoginPage() {
             )}
 
             <div className="space-y-1.5">
-               <label className="text-[11px] font-black uppercase tracking-widest text-[#af382b] ml-1">Email / Số điện thoại</label>
+               <label className="text-[11px] font-black uppercase tracking-widest text-[#af382b] ml-1">Email</label>
                 <input
-                  type="text"
-                  placeholder="Nhập email hoặc số điện thoại"
+                  type="email"
+                  placeholder="Nhập địa chỉ email của bạn"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-white/90 border border-[#e8e2d9] rounded-xl px-4 py-3.5 text-sm text-[#2d2a26] placeholder-[#b8b0a5] focus:outline-none focus:border-[#af382b] focus:ring-1 focus:ring-[#af382b] transition-all"
@@ -164,21 +212,34 @@ export function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#af382b] hover:bg-[#8c2d22] active:scale-[0.98] text-white font-black py-4 px-4 rounded-xl text-sm transition-all shadow-xl shadow-[#af382b]/20 mt-4 uppercase tracking-widest"
+              disabled={isLoading}
+              className="w-full bg-[#af382b] hover:bg-[#8c2d22] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 text-white font-black py-4 px-4 rounded-xl text-sm transition-all shadow-xl shadow-[#af382b]/20 mt-4 uppercase tracking-widest flex items-center justify-center gap-2"
             >
+              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
               {isSignUp ? 'Đăng ký ngay' : 'Đăng nhập'}
             </button>
           </form>
 
-          {/* Quick Demo Login trigger */}
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            className="w-full bg-[#3d3d3d]/5 border border-[#3d3d3d]/10 hover:bg-[#3d3d3d]/10 text-xs font-black py-4 px-4 rounded-xl text-[#5c554f] flex items-center justify-center gap-3 transition-all mt-1 uppercase tracking-widest"
-          >
-            <ShieldCheck className="w-5 h-5 text-[#af382b]" />
-            <span>Chế độ dùng thử</span>
-          </button>
+          {/* Divider */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#d6cfc7]" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#a89f95]">Hoặc</span>
+            <div className="h-px flex-1 bg-[#d6cfc7]" />
+          </div>
+
+          {/* Google Sign-In (rendered by Google Identity Services) */}
+          <div className="flex flex-col items-center gap-2">
+            <div ref={googleBtnRef} className="flex justify-center min-h-[44px] w-full [&>div]:!w-full" />
+            {!googleReady && !googleError && (
+              <div className="flex items-center gap-2 text-xs text-[#7e746b]">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Đang tải Google Sign-In…</span>
+              </div>
+            )}
+            {googleError && (
+              <p className="text-[11px] text-[#af382b] text-center">{googleError}</p>
+            )}
+          </div>
 
           {/* Toggle switcher at the bottom */}
           <div className="text-center text-xs text-[#7e746b] mt-2">
@@ -189,7 +250,8 @@ export function LoginPage() {
               type="button"
               onClick={() => {
                 setIsSignUp(!isSignUp);
-                setError('');
+                setLocalError('');
+                clearError();
               }}
               className="text-[#af382b] font-black hover:underline ml-1.5"
             >
